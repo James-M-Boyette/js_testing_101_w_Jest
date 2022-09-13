@@ -1,4 +1,4 @@
-import { helloFunction, addFunction } from "./App";
+import { helloFunction, addFunction, removeSNames } from "./App";
 
 /**
  * * Video #1:
@@ -19,7 +19,12 @@ describe("Video 1's 'helloFunction()' ...", () => {
   });
 });
 
-describe("addFunction", () => {
+/**
+ * * Video #2:
+ * Here, we will work out how to perform multiple checks within one test ...
+ */
+
+describe("Video #2's addFunction", () => {
   it("SHOULD add two numbers", () => {
     expect(addFunction(1, 2)).toBe(3);
     // Here, again, we're testing a function from another file. Of note, because we're exporting/importing that function, we can have our test pass-in arguments to that function! So 'expect' will pass `1` and `2` to our 'addFunction()' and then perform a conditional check (under the hood) of the results against what we've proscribed as the correct output (in 'toBe')
@@ -36,5 +41,42 @@ describe("addFunction", () => {
     expect(addFunction(1, [])).toBe(null);
     expect(addFunction(16, [{}, "stuff", 3])).toBe(null);
     // .. BUT we have a problem: if our conditional (in the imported function) isn't narrow enough, or is too broad, we'll get false positives/negatives. In this case, we're passing a hash in for 'x' ... and a hash *ISN'T* a string, so our first version of the conditional won't be triggered, and we'll get back something we ultimately don't want (a "{object object}1" string o.O)
+  });
+});
+
+/**
+ * * Video #3:
+ * Here, we work-out how to do TDD, or "Test Driven Development" ...
+ */
+
+// For an example of one might approach TDD, the following is an example of the inital scaffolding of a test. Using largely psuedo code for our statements, we can work out what we'll want our sister function to actually do ...
+describe("Video #3's TEST sketch", () => {
+  it("SHOULD remove all 's' names", () => {});
+  it("should NOT remove all other names", () => {});
+  it("should account for case", () => {});
+});
+
+// Here,
+describe("Video #3's removeSNames Function", () => {
+  // const names = ["Scott", "Courtney", "Wes", "scott", "Capt. America", "Steve"];
+  /**
+   * *This should work, shouldn't it?
+   */
+  it("SHOULD remove all 'S' names", () => {
+    const names = ["Scott", "Courtney", "Steve"];
+    // 'toContain' is one of many "matchers" in Jest - look at documentation for more of them
+    expect(removeSNames(names)).not.toContain("Scott");
+    expect(removeSNames(names)).not.toContain("Steve");
+  });
+  it("should NOT remove all other names", () => {
+    const names = ["Scott", "Courtney", "Wes", "scott", "Capt. America"];
+    expect(removeSNames(names)).toContain("Courtney");
+    expect(removeSNames(names)).toContain("Wes");
+    expect(removeSNames(names)).toContain("Capt. America");
+  });
+  it("SHOULD account for differences in case (for first letter of name, ie: 'Scott' v 'scott') and delete BOTH", () => {
+    const names = ["Scott", "Courtney", "Wes", "scott", "Capt. America"];
+    expect(removeSNames(names)).not.toContain("Scott");
+    expect(removeSNames(names)).not.toContain("scott");
   });
 });
